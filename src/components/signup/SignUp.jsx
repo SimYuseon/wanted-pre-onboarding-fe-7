@@ -1,71 +1,120 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Form from "./Form";
-import Button from "./Button";
+
 const SignUp = () => {
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: "",
-  });
+  const email = useRef();
+  const password = useRef();
+  const passwordCheck = useRef();
+
   const [isDisable, setIsDisable] = useState(true);
-  const [isEmail, setIsEmail] = useState(true);
-  const [ispassWord, setIsPassWord] = useState(true);
+  const [isEmail, setIsEmail] = useState(false);
+  const [ispassWord, setIsPassWord] = useState(false);
+  const [ispassWordCheck, setIspassWordCheck] = useState(false);
 
-  const { email, password } = inputs;
+  const navigate = useNavigate();
 
-  const onChangeInputs = (e) => {
-    const { value, name } = e.target;
+  const onChange = () => {
     const regExp =
       /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    setInputs({ ...inputs, [name]: value });
 
-    if (regExp.test(inputs.email) && inputs.password.length >= 8) {
-      setIsDisable(false);
-      setIsEmail(true);
-      setIsPassWord(true);
-    } else if (inputs.email.length > 0) {
+    if (regExp.test(email.current.value) || email.current.value.length === 0) {
       setIsEmail(false);
+    } else if (email.current.value.length > 0) {
+      setIsEmail(true);
     }
 
-    if (inputs.password.length > 0) {
+    if (
+      password.current.value.length >= 8 ||
+      password.current.value.length === 0
+    ) {
       setIsPassWord(false);
+    } else if (password.current.value.length > 0) {
+      setIsPassWord(true);
+    }
+
+    if (
+      passwordCheck.current.value === password.current.value ||
+      passwordCheck.current.value.length === 0
+    ) {
+      setIspassWordCheck(false);
+    } else if (passwordCheck.current.value.length > 0) {
+      setIspassWordCheck(true);
+    }
+
+    if (
+      regExp.test(email.current.value) &&
+      password.current.value.length >= 8 &&
+      passwordCheck.current.value === password.current.value
+    ) {
+      setIsDisable(false);
+    } else if (
+      !regExp.test(email.current.value) ||
+      password.current.value.length < 8 ||
+      passwordCheck.current.value !== password.current.value
+    ) {
+      setIsDisable(true);
     }
   };
 
   const onClickSignUp = async () => {
-    console.log(inputs.email, inputs.password);
-    const { data } = await axios
+    await axios
       .post("https://pre-onboarding-selection-task.shop/auth/signup", {
-        email: inputs.email,
-        password: inputs.password,
+        email: email.current.value,
+        password: password.current.value,
       })
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
+        alert("회원가입이 완료!");
+        navigate("/");
       })
       .catch((err) => {
-        console.log(err);
+        alert(err.response.data.message);
       });
-
-    setInputs({
-      email: "",
-      password: "",
-    });
   };
 
   return (
     <Container>
       <h2 className="title">회원가입 페이지</h2>
-      <Form
-        onChangeInputs={onChangeInputs}
-        email={email}
-        password={password}
-        isEmail={isEmail}
-        ispassWord={ispassWord}
-      />
-      <Button onClickLogin={onClickSignUp} isDisable={isDisable} />
+      <InputWrap>
+        <input
+          onChange={onChange}
+          className="input"
+          placeholder="이메일"
+          ref={email}
+        />
+        {isEmail ? <span>이메일 주소를 확인해주세요</span> : null}
+
+        <input
+          onChange={onChange}
+          className="input"
+          placeholder="비밀번호"
+          ref={password}
+        />
+        {ispassWord ? <span>비밀번호를 8자이상 입력해주세요</span> : null}
+
+        <input
+          onChange={onChange}
+          className="input"
+          placeholder="비밀번호 확인"
+          ref={passwordCheck}
+        />
+        {ispassWordCheck ? <span>동일한 비밀번호를 입력해주세요</span> : null}
+      </InputWrap>
+      <ButtonWrap>
+        <ButtonStyled disabled={isDisable} onClick={onClickSignUp}>
+          회원가입
+        </ButtonStyled>
+        <ButtonStyled
+          onClick={() => {
+            navigate("/");
+          }}
+          color="#f8246b"
+          backColor="white"
+        >
+          로그인
+        </ButtonStyled>
+      </ButtonWrap>
     </Container>
   );
 };
@@ -77,6 +126,39 @@ const Container = styled.div`
   .title {
     text-align: center;
     color: #f8246b;
+  }
+`;
+const InputWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  .input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid gray;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  span {
+    margin-bottom: 10px;
+    color: #f8246b;
+    font-size: 12px;
+  }
+`;
+const ButtonWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const ButtonStyled = styled.button`
+  margin-bottom: 5px;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: ${(props) => props.color || "white"};
+  background-color: ${(props) => props.backColor || "#f8246b"};
+  &:disabled {
+    opacity: 0.5;
   }
 `;
 
