@@ -1,15 +1,15 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
 
-const Login = () => {
+const SignIn = () => {
   const email = useRef();
   const password = useRef();
   const navigate = useNavigate();
 
-  const onClickLogin = async () => {
+  const onClickSignIn = async () => {
     await axios
       .post("https://pre-onboarding-selection-task.shop/auth/signin", {
         email: email.current.value,
@@ -35,10 +35,15 @@ const Login = () => {
       <InputWrap>
         <input className="input" placeholder="이메일" ref={email} />
 
-        <input className="input" placeholder="비밀번호" ref={password} />
+        <input
+          className="input"
+          placeholder="비밀번호"
+          ref={password}
+          type="password"
+        />
       </InputWrap>
       <ButtonWrap>
-        <ButtonStyled onClick={onClickLogin}>로그인</ButtonStyled>
+        <ButtonStyled onClick={onClickSignIn}>로그인</ButtonStyled>
         <ButtonStyled
           onClick={() => {
             navigate("/signup");
@@ -54,7 +59,7 @@ const Login = () => {
 };
 
 const Container = styled.div`
-  width: 70%;
+  width: 300px;
   margin: auto;
   margin-top: 10%;
   .title {
@@ -96,4 +101,4 @@ const ButtonStyled = styled.button`
   }
 `;
 
-export default Login;
+export default SignIn;

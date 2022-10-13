@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -90,6 +90,7 @@ const SignUp = () => {
           className="input"
           placeholder="비밀번호"
           ref={password}
+          type="password"
         />
         {ispassWord ? <span>비밀번호를 8자이상 입력해주세요</span> : null}
 
@@ -98,6 +99,7 @@ const SignUp = () => {
           className="input"
           placeholder="비밀번호 확인"
           ref={passwordCheck}
+          type="password"
         />
         {ispassWordCheck ? <span>동일한 비밀번호를 입력해주세요</span> : null}
       </InputWrap>
@@ -120,7 +122,7 @@ const SignUp = () => {
 };
 
 const Container = styled.div`
-  width: 70%;
+  width: 300px;
   margin: auto;
   margin-top: 10%;
   .title {
