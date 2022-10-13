@@ -3,9 +3,22 @@ import axios from "axios";
 export const api = axios.create({
   baseURL: "https://pre-onboarding-selection-task.shop/",
   headers: {
+    accept: "application/json,",
     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
   },
 });
+
+api.interceptors.request.use(
+  (config) => {
+    config.headers["Authorization"] = localStorage.getItem("access_token");
+    console.log("인터셉터요청성공");
+    return config;
+  },
+  (error) => {
+    console.log("인터셉터요청에러", error);
+    return Promise.reject(error);
+  }
+);
 
 export const accountAPI = {
   postLogin: async (data) => {

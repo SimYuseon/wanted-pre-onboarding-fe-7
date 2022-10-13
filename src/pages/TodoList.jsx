@@ -7,6 +7,8 @@ import TodoForm from "../components/todo/TodoForm";
 
 const TodoList = () => {
   const [todos, setTodos] = useState();
+  const [resTodo, setResTodo] = useState();
+  const [delelete, setDelete] = useState();
 
   const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ const TodoList = () => {
     } else {
       navigate("/");
     }
-  }, [navigate]);
+  }, [navigate, resTodo, delelete]);
 
   return (
     <ConTainer>
@@ -27,7 +29,16 @@ const TodoList = () => {
       <TodoForm setTodos={setTodos} />
 
       {todos?.map((todo) => {
-        return <Todo key={todo.id} todo={todo} />;
+        return (
+          <Todo
+            key={todo.id}
+            todo={todo}
+            setResTodo={setResTodo}
+            resTodo={resTodo}
+            delelte={delelete}
+            setDelete={setDelete}
+          />
+        );
       })}
     </ConTainer>
   );

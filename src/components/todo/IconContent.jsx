@@ -7,6 +7,7 @@ const IconContent = ({
   setIsCompleted,
   todo,
   upDateRef,
+  resTodo,
 }) => {
   return (
     <IconContentWrap>

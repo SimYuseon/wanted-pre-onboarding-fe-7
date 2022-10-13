@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import IconContent from "./IconContent";
 
-const Todo = ({ todo }) => {
+const Todo = ({ todo, resTodo, setResTodo, setDelete, delelete }) => {
   const [isCompleted, setIsCompleted] = useState(todo.isCompleted);
   const [isUpDate, setIsUpDate] = useState(false);
   const upDateRef = useRef();
@@ -17,6 +17,7 @@ const Todo = ({ todo }) => {
         setIsCompleted={setIsCompleted}
         todo={todo}
         upDateRef={upDateRef}
+        resTodo={resTodo}
       />
 
       <ButtonWrap>
@@ -31,6 +32,7 @@ const Todo = ({ todo }) => {
                 })
                 .then((res) => {
                   console.log(res);
+                  setResTodo(res.todo);
                 })
                 .catch((err) => console.log(err));
             } else if (!isUpDate) {
@@ -53,7 +55,9 @@ const Todo = ({ todo }) => {
         ) : (
           <ButtonStyled
             onClick={() => {
-              todoAPI.deleteTodo(todo.id).then(() => {});
+              todoAPI.deleteTodo(todo.id).then((res) => {
+                setDelete(todo.id);
+              });
             }}
           >
             삭제
