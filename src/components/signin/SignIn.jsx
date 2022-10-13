@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
@@ -8,6 +8,12 @@ const SignIn = () => {
   const email = useRef();
   const password = useRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      navigate("/todo");
+    }
+  });
 
   const onClickSignIn = async () => {
     await axios
