@@ -1,36 +1,89 @@
-import { useRef, useState } from "react";
-import styled from "styled-components";
-import { apis } from "../../api/api";
-const Todo = () => {
-  const inputRef = useRef();
-  //   const [addTodo, setAddTodo]=useState()
+import { todoAPI } from "../../api/api";
+import React, { useState, useRef } from "react";
 
-  //   const addTodo =  (inputRef.current.value) => {
-  //     console.log();
-  //    { "data":inputRef.current.value}
-  //   };
+import styled from "styled-components";
+import IconContent from "./IconContent";
+
+const Todo = ({ todo }) => {
+  const [isCompleted, setIsCompleted] = useState(todo.isCompleted);
+  const [isUpDate, setIsUpDate] = useState(false);
+  const upDateRef = useRef();
 
   return (
-    <div>
-      <h1>Todo List</h1>
-      <input type="text" ref={inputRef} />
-      <button
-        onClick={() => {
-          apis.addTodo({ todo: inputRef.current.value }).then((res) => {
-            console.log(res.data);
-          });
-        }}
-      >
-        추가
-      </button>
-      <div>
-        <span>리액트 공부하기</span>
-        <button>수정</button>
-        <button>삭제</button>
-      </div>
-    </div>
+    <TodoWrap>
+      <IconContent
+        isUpDate={isUpDate}
+        isCompleted={isCompleted}
+        setIsCompleted={setIsCompleted}
+        todo={todo}
+        upDateRef={upDateRef}
+      />
+
+      <ButtonWrap>
+        <ButtonStyled
+          onClick={() => {
+            if (isUpDate) {
+              setIsUpDate(!isUpDate);
+              todoAPI
+                .upDateTodo(todo.id, {
+                  todo: upDateRef.current.value,
+                  isCompleted: isCompleted,
+                })
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => console.log(err));
+            } else if (!isUpDate) {
+              setIsUpDate(!isUpDate);
+            }
+          }}
+        >
+          {isUpDate ? "제출" : "수정"}
+        </ButtonStyled>
+
+        {isUpDate ? (
+          <ButtonStyled
+            onClick={() => {
+              setIsUpDate(false);
+              setIsCompleted(todo.isCompleted);
+            }}
+          >
+            취소
+          </ButtonStyled>
+        ) : (
+          <ButtonStyled
+            onClick={() => {
+              todoAPI.deleteTodo(todo.id).then(() => {});
+            }}
+          >
+            삭제
+          </ButtonStyled>
+        )}
+      </ButtonWrap>
+    </TodoWrap>
   );
 };
 
-const InputStyled = () => {};
+const TodoWrap = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #f8246b;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+`;
+
+const ButtonWrap = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+`;
+const ButtonStyled = styled.button`
+  background-color: #f8246b;
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: none;
+  color: white;
+`;
+
 export default Todo;
