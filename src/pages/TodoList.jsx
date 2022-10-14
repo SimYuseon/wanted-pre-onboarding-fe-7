@@ -7,21 +7,23 @@ import TodoForm from "../components/todo/TodoForm";
 
 const TodoList = () => {
   const [todos, setTodos] = useState();
-  const [resTodo, setResTodo] = useState();
-  const [delelete, setDelete] = useState();
 
   const navigate = useNavigate();
 
+  const getTodo = () => {
+    todoAPI.getTodos().then((res) => {
+      console.log(res);
+      setTodos(res);
+    });
+  };
+
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
-      todoAPI.getTodos().then((res) => {
-        console.log(res);
-        setTodos(res);
-      });
+      getTodo();
     } else {
       navigate("/");
     }
-  }, [navigate, resTodo, delelete]);
+  }, [navigate]);
 
   return (
     <ConTainer>
@@ -29,16 +31,7 @@ const TodoList = () => {
       <TodoForm setTodos={setTodos} />
 
       {todos?.map((todo) => {
-        return (
-          <Todo
-            key={todo.id}
-            todo={todo}
-            setResTodo={setResTodo}
-            resTodo={resTodo}
-            delelte={delelete}
-            setDelete={setDelete}
-          />
-        );
+        return <Todo key={todo.id} todo={todo} getTodo={getTodo} />;
       })}
     </ConTainer>
   );
