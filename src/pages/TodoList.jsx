@@ -12,7 +12,6 @@ const TodoList = () => {
 
   const getTodo = () => {
     todoAPI.getTodos().then((res) => {
-      console.log(res);
       setTodos(res);
     });
   };

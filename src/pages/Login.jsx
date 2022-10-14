@@ -25,15 +25,10 @@ const Login = () => {
       })
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
-
-        console.log(localStorage.getItem("access_token"));
         alert("로그인 완료 ");
-
         navigate("/todo");
       })
-      .catch((err) => {
-        console.log(err);
-
+      .catch(() => {
         alert("비밀번호 또는 아이디를 확인해주세요");
       });
   };

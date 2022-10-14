@@ -31,8 +31,7 @@ const Todo = ({ todo, getTodo }) => {
                 })
                 .then(() => {
                   getTodo();
-                })
-                .catch((err) => console.log(err));
+                });
             } else if (!isUpDate) {
               setIsUpDate(!isUpDate);
             }

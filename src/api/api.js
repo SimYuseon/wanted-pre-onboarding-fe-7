@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://pre-onboarding-selection-task.shop/",
+  baseURL: process.env.REACT_APP_URL,
 });
 
 api.interceptors.request.use(
@@ -9,11 +9,9 @@ api.interceptors.request.use(
     config.headers["Authorization"] = `Bearer ${localStorage.getItem(
       "access_token"
     )}`;
-    console.log("인터셉터요청성공");
     return config;
   },
   (error) => {
-    console.log("인터셉터요청에러", error);
     return Promise.reject(error);
   }
 );
